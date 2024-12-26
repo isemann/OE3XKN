@@ -50,17 +50,6 @@ uint8_t gAppPort = LORAWAN_APP_PORT;                              /* data port*/
 #define LORA_BANDWIDTH 0        // [0: 125 kHz, 1: 250 kHz, 2: 500 kHz, 3: Reserved]
 #define LORA_SPREADING_FACTOR 7 // [SF7..SF12]
 
-/** Definition of the Analog input that is connected to the battery voltage divider */
-#define PIN_VBAT A0
-/** Definition of milliVolt per LSB => 3.0V ADC range and 12-bit ADC resolution = 3000mV/4096 */
-#define VBAT_MV_PER_LSB (0.73242188F)
-/** Voltage divider value => 1.5M + 1M voltage divider on VBAT = (1.5M / (1M + 1.5M)) */
-#define VBAT_DIVIDER (0.4F)
-/** Compensation factor for the VBAT divider */
-#define VBAT_DIVIDER_COMP (1.73)
-/** Fixed calculation of milliVolt from compensation value */
-#define REAL_VBAT_MV_PER_LSB (VBAT_DIVIDER_COMP * VBAT_MV_PER_LSB)
-
 
 /**@brief Structure containing LoRaWan parameters, needed for lmh_init()
  */
@@ -125,11 +114,11 @@ void setup()
   //}
 
   delay(10);
-  initReadVBAT();
+  
   //Serial.println("=====================================");
   //Serial.println("Welcome to RAK4630 LoRaWan!!!");
   //Serial.println("Type: OTAA");
-  readVBAT();
+
   // Environment Sensor
   bme680_init();
 
@@ -161,9 +150,6 @@ void setup()
 
 void loop()
 {
-  // Get a raw ADC reading
-  BoardGetBatteryLevel();
-  
   // Handle Radio events
   Radio.IrqProcess();
 }
@@ -287,22 +273,5 @@ void sensor_get()
   m_lora_app_data.buffsize = i;
 }
 
-void initReadVBAT(void)
-{
-	// Set the analog reference to 3.0V (default = 3.6V)
-	analogReference(AR_INTERNAL_3_0);
-	// Set the resolution to 12-bit (0..4095)
-	analogReadResolution(12); // Can be 8, 10, 12 or 14
-	// Let the ADC settle
-	delay(1);
-}
 
-float readVBAT(void)
-{
-  float raw;
-  // Get the raw 12-bit, 0..3000mV ADC value
-  raw = analogRead(PIN_VBAT);
-
-  return raw * REAL_VBAT_MV_PER_LSB;
-}
 
