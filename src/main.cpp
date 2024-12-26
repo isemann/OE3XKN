@@ -75,7 +75,7 @@ static lmh_callback_t lora_callbacks = {BoardGetBatteryLevel, BoardGetUniqueId, 
 //OTAA keys
 uint8_t nodeDeviceEUI[8] = {0xa8, 0x40, 0x41, 0xa5, 0x31, 0x83, 0xaa, 0x9c}; // ISE-DEV-004, OE3XKN, Kuhberg
 uint8_t nodeAppEUI[8] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-uint8_t nodeAppKey[16] = {0x16, 0x6F, 0x68, 0x4E, 0x69, 0x31, 0xD8, 0x32, 0x51, 0x94, 0x4D, 0x1D, 0x92, 0x66, 0x3D, 0xEF};
+uint8_t nodeAppKey[16] = {0xcc, 0x04, 0x05, 0x6c, 0xac, 0x1a, 0xfa, 0x5f, 0x2e, 0x89, 0xd7, 0xd4, 0xfc, 0xf0, 0xad, 0x21};
 
 // Private defination
 #define LORAWAN_APP_DATA_BUFF_SIZE 64                                         /**< buffer size of the data to be transmitted. */
@@ -246,13 +246,13 @@ void bme680_init()
 
 void sensor_get()
 {
-  gAppPort = 5;
+  gAppPort = 3;
   char payload[64];
   uint32_t i = 0;
   memset(m_lora_app_data.buffer, 0, LORAWAN_APP_DATA_BUFF_SIZE);
   m_lora_app_data.port = gAppPort;
   double temp = bme.readTemperature();
-  double pres = bme.readPressure();
+  double pres = bme.readPressure()/100;
   double hum = bme.readHumidity();
   float voltage_sensor;
   int sensor_pin = A1; // the input pin A1 for the potentiometer
