@@ -114,7 +114,7 @@ void setup()
   //}
 
   delay(10);
-  
+  initReadVBAT();
   //Serial.println("=====================================");
   //Serial.println("Welcome to RAK4630 LoRaWan!!!");
   //Serial.println("Type: OTAA");
@@ -271,6 +271,16 @@ void sensor_get()
   }
 
   m_lora_app_data.buffsize = i;
+}
+
+void initReadVBAT(void)
+{
+	// Set the analog reference to 3.0V (default = 3.6V)
+	analogReference(AR_INTERNAL_3_0);
+	// Set the resolution to 12-bit (0..4095)
+	analogReadResolution(12); // Can be 8, 10, 12 or 14
+	// Let the ADC settle
+	delay(1);
 }
 
 
